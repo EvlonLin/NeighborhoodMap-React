@@ -1,28 +1,43 @@
-.App {
+html, body, .root {
+  font-family: Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: rgba(240, 240, 240);
+  font-size: 26px;
+  margin: 0 0 10px 0;
   text-align: center;
+  font-weight:lighter;
+  letter-spacing: 1px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.app {
+  height: 100%;
+  position: relative;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+#map {
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
-.App-title {
-  font-size: 1.5em;
+.panel {
+  background:rgba(25, 25, 25,0.90);
+  border-radius: 12px;
+  height: 75%;
+  line-height: 37px;
+  padding: 10px 10px 30px 10px;
+  text-align: left;
+  width: 340px;
+  z-index: 2;
+  position: absolute;
+  top: 10%;
+  left: 2%;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
