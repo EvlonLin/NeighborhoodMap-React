@@ -7,7 +7,6 @@ class InfoPanel extends Component {
   render() {
     return (
 	    <div className="panel">
-	        <h1> Great Places Toronto </h1>
 	    </div>
     );
   }
