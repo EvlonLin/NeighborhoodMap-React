@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-class GoogleMap extends Component {
+class GoogleMapSearch extends Component {
   state = {
     location: [
       {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
@@ -39,4 +39,4 @@ class GoogleMap extends Component {
 // AIzaSyAhXhPjZlCsSU-ByZO61Pw24Pg0-rBnB20
 
 
-export default GoogleMap;
+export default GoogleMapSearch;
