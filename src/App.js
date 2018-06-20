@@ -8,18 +8,47 @@ import Typography from '@material-ui/core/Typography';
 
 class MapApp extends React.Component {
   state = {
-    marker: [],
+    markers: [],
     infowindow: '',
-    locations: 
-    [
-    {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
-    {title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
-    {title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
-    {title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
-    {title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
-    {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
+    locations: [
+      {
+        title: 'Park Ave Penthouse', 
+        location: {lat: 40.7713024, lng: -73.9632393}, 
+        address: 'Union Square W, New York',
+        type: "food"
+      },
+      {
+        title: 'Chelsea Loft',
+        location: {lat: 40.7444883, lng: -73.9949465},
+        address: 'Union Square W, New York',
+        type: "fun"
+      },
+      {
+        title: 'Union Square Open Floor Plan',
+        location: {lat: 40.7347062, lng: -73.9895759}, 
+        address: 'Union Square W, New York',
+        type: "fun"
+      },
+      {
+        title: 'East Village Hip Studio',
+        location: {lat: 40.7281777, lng: -73.984377}, 
+        address: 'Union Square W, New York',
+        type: "food"
+      },
+      {
+        title: 'TriBeCa Artsy Bachelor Pad', 
+        location: {lat: 40.7195264, lng: -74.0089934}, 
+        address: 'Union Square W, New York',
+        type: "fun"
+      },
+      {
+        title: 'Chinatown Homey Space', 
+        location: {lat: 40.7180628, lng: -73.9961237}, 
+        address: 'Union Square W, New York',
+        type: "food"
+      }
     ],
-    map: '',
+    map: {},
     place_formatted: '',
     place_id: '',
     place_location: ''
@@ -38,6 +67,10 @@ class MapApp extends React.Component {
         zoom: 13,
         mapTypeControl: false,
         styles: MapStyle
+    });
+    this.setState({
+      map: map,
+      infowindow: infowindow
     });
 
     let marker = new window.google.maps.Marker({
@@ -91,37 +124,39 @@ class MapApp extends React.Component {
         position: loc.location,
         map: map,
         title: loc.title,
-        animation: window.google.maps.Animation.DROP
+        address: loc.address,
+        animation: window.google.maps.Animation.DROP,
+        type: loc.type
         });
+        // this.setState(state => ({
+        //   markers: state.contacts.concat([ loc ])
+        // }))
         loc.addListener('click', () => {
-        infowindow.marker = loc;
-        infowindow.setContent(
-          '<Paper>'+
-          loc.title+
-          '</Paper>'
-        )
-        infowindow.open(this.state.map, infowindow.marker);
-      });
+          this.toggleBounce(loc)
+          infowindow.marker = loc;
+          infowindow.setContent(
+            '<Paper>'+
+            loc.title+
+            '</Paper>'
+          )
+          infowindow.open(this.state.map, infowindow.marker);
+        });
+        this.state.markers.push(loc)
     })
-
-    this.setState({
-      map: map,
-      // infowindow: Infowindow,
-    });
   }
 
-  // addinfowindow(marker) {
-  //   var infowindow = new window.google.maps.InfoWindow();
-  //   marker.addListener('click', () => {
-  //     infowindow.marker = marker;
-  //     infowindow.setContent(
-  //       '<Paper>'+
-  //       marker.title+
-  //       '</Paper>'
-  //     )
-  //     infowindow.open(this.state.map, infowindow.marker);
-  //   })
-  // }
+  handleClick = (loc) => {
+    // this.state.markers.map( mar => mar.setMap(null))
+    this.state.map.setCenter(loc.position);
+    this.state.map.panBy(0, 0);
+    this.toggleBounce(loc);
+  }
+
+  toggleBounce(marker) {
+    this.state.markers.map((mar)=> mar.setAnimation(null))
+    marker.setAnimation(window.google.maps.Animation.BOUNCE)
+  }
+
 
   render() {
     return (
@@ -129,6 +164,10 @@ class MapApp extends React.Component {
       <div id="map"/>
       <InfoPanel
       searchPlace={this.searchPlace}
+      handleClick={this.handleClick}
+      locations={this.state.locations}
+      markers={this.state.markers}
+      map={this.state.map}
       />
       </div>
     );
