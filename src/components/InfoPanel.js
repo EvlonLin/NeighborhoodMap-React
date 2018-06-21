@@ -40,20 +40,13 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit * 2,
-    '&:active': {
-    	backgroundColor: '#3FBF3F',
-    },
   },
 });
-
-
-
 
 class InfoPanel extends Component {
 	state = {
 	  query: '',
 	  type: 'all'
-
 	}
 
 	createList () {
@@ -68,18 +61,43 @@ class InfoPanel extends Component {
       showingContacts = markers
     }
 
-		if (type === "all") {
+		if (query && type!== 'all') {
 			markers.map( marker => marker.setMap(null))
 			return showingContacts.map(marker => {
-				marker.setAnimation(window.google.maps.Animation.DROP)
-				marker.setMap(map)
-				return(
-			 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-			  	<ListItemText primary={marker.title} secondary={marker.address} />
-				</ListItem>
-				);
+				if (type === marker.type){
+					marker.setAnimation(window.google.maps.Animation.BOUNCE)
+					marker.setMap(map)
+					return(
+				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+				  	<ListItemText primary={marker.title} secondary={marker.address} />
+					</ListItem>
+					);
+				}
 			})
-		} else {
+		} else if (query) {
+				markers.map( marker => marker.setMap(null))
+				return showingContacts.map(marker => {
+					marker.setAnimation(window.google.maps.Animation.BOUNCE)
+					marker.setMap(map)
+					return(
+				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+				  	<ListItemText primary={marker.title} secondary={marker.address} />
+					</ListItem>
+					);
+				})
+		} else if (type === 'all') {
+				return markers.map(marker => {
+					marker.setAnimation(window.google.maps.Animation.DROP)
+					marker.setMap(map)
+					return(
+				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+				  	<ListItemText primary={marker.title} secondary={marker.address} />
+					</ListItem>
+					);
+				})
+		}	else {
+				map.setCenter({lat: 43.6547878, lng: -79.3967198});
+				map.panBy(0, 0);
 				markers.map( marker => marker.setMap(null))
 				return markers.map(marker => {
 					if (type === marker.type){
@@ -92,25 +110,18 @@ class InfoPanel extends Component {
 						);
 					}
 				})
-			}
+		}
 	}
 
-		// 	if (type === "all") {
-		// 	return showingContacts.map(marker => {
-		// 		marker.setAnimation(window.google.maps.Animation.DROP)
-		// 		marker.setMap(map)
-		// 		return(
-		// 	 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-		// 	  	<ListItemText primary={marker.title} secondary={marker.address} />
-		// 		</ListItem>
-		// 		);
-		// 	})
-		// } 
+	defaultList (newType) {
+		this.setState({ type:newType });
+		this.setState({ query:'' })
+		this.props.map.setCenter({lat: 43.6547878, lng: -79.3967198});
+		this.props.map.panBy(0, 0);
+	}
+
 
 	filterList = (query) => {
-		const { map, markers, handleClick } = this.props;
-		const { type } = this.state;
-
 		this.setState({ query })
 	}
 
@@ -142,7 +153,7 @@ class InfoPanel extends Component {
 		      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
 		        <Icon>edit_icon</Icon>
 		      </Button>
-		      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+		      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
 		        <DeleteIcon />
 		      </Button>
 		    </div>

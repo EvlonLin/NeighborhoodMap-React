@@ -3,7 +3,10 @@ import "./App.css"
 import InfoPanel from "./components/InfoPanel"
 import scriptLoader from 'react-async-script-loader';
 import { MapStyle } from "./MapStyle.js"
-import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 class MapApp extends React.Component {
@@ -12,46 +15,49 @@ class MapApp extends React.Component {
     infowindow: '',
     locations: [
       {
-        title: 'Park Ave Penthouse', 
-        location: {lat: 40.7713024, lng: -73.9632393}, 
-        address: 'Union Square W, New York',
-        type: "food"
+        title: 'Pizza Nova', 
+        location: {lat: 43.6651599, lng: -79.3883925}, 
+        address: '997 Bay St, Toronto, ON M5S 3A6',
+        type: "food",
+        id: "4b958823f964a520d8a734e3"
       },
       {
-        title: 'Chelsea Loft',
-        location: {lat: 40.7444883, lng: -73.9949465},
-        address: 'Union Square W, New York',
-        type: "fun"
+        title: 'Jimmy\'s Coffee',
+        location: {lat: 43.6452575, lng: -79.4003085},
+        address: '107 Portland St, Toronto ON M5V 2N3',
+        type: "food",
+        id: "4b2274c1f964a5200f4724e3"
       },
       {
-        title: 'Union Square Open Floor Plan',
-        location: {lat: 40.7347062, lng: -73.9895759}, 
-        address: 'Union Square W, New York',
-        type: "fun"
+        title: 'Mark Andrew Hair Studio',
+        location: {lat: 43.6512735, lng: -79.3953462}, 
+        address: '51 Sullivan St, Toronto ON',
+        type: "fun",
+        id: "4b11bcf0f964a5207a8323e3"
       },
       {
-        title: 'East Village Hip Studio',
-        location: {lat: 40.7281777, lng: -73.984377}, 
-        address: 'Union Square W, New York',
-        type: "food"
+        title: 'Krispy Kreme Doughnut Café',
+        location: {lat: 43.6617052, lng: -79.4082591}, 
+        address: '215 Harbord St, Toronto ON M5S 1H6',
+        type: "food",
+        id: "4cdb1125d4ecb1f7d9777748"
       },
       {
-        title: 'TriBeCa Artsy Bachelor Pad', 
-        location: {lat: 40.7195264, lng: -74.0089934}, 
-        address: 'Union Square W, New York',
-        type: "fun"
+        title: 'Lever Brothers soap factory', 
+        location: {lat: 43.6531261, lng: -79.3479356}, 
+        address: '21 Don Roadway, Toronto ON',
+        type: "fun",
+        id: "531f6f3b498e347c2c14d59c"
       },
       {
-        title: 'Chinatown Homey Space', 
-        location: {lat: 40.7180628, lng: -73.9961237}, 
-        address: 'Union Square W, New York',
-        type: "food"
+        title: 'The Rosemont Fitness', 
+        location: {lat: 43.645604, lng: -79.390136}, 
+        address: '50 John Street, Toronto ON',
+        type: "fun",
+        id: "571d37de498ef2ba27feb6ef"
       }
     ],
     map: {},
-    place_formatted: '',
-    place_id: '',
-    place_location: ''
   }
   componentDidMount() {
     window.initMap = this.initMap;
@@ -63,8 +69,8 @@ class MapApp extends React.Component {
     var infowindow = new window.google.maps.InfoWindow();
     mapview.style.height = window.innerHeight + "px";
     var map = new window.google.maps.Map(mapview, {
-        center: {lat: 40.7413549, lng: -73.9980244},
-        zoom: 13,
+        center: {lat: 43.6547878, lng: -79.3967198},
+        zoom: 14,
         mapTypeControl: false,
         styles: MapStyle
     });
@@ -73,52 +79,6 @@ class MapApp extends React.Component {
       infowindow: infowindow
     });
 
-    // let marker = new window.google.maps.Marker({
-    //   map: map,
-    //   animation: window.google.maps.Animation.DROP
-    // });
-
-    // let autocomplete = new window.google.maps.places.Autocomplete(input);
-    // autocomplete.bindTo('bounds', map);
-    // autocomplete.addListener('place_changed', () => {
-    //   let place = autocomplete.getPlace();
-    //   // let location = place.geometry.location;
-    //   if (!place.geometry) {
-    //     // User entered the name of a Place that was not suggested and
-    //     // pressed the Enter key, or the Place Details request failed.
-    //     window.alert("No details available for input: '" + place.name + "'");
-    //     return;
-    //   }
-    //   if (place.geometry.viewport) {
-    //     map.fitBounds(place.geometry.viewport);
-    //   } else {
-    //     map.setCenter(place.geometry.location);
-    //     map.setZoom(17); 
-    //   }
-    //   this.setState({
-    //     place_formatted: place.formatted_address,
-    //     place_id: place.place_id,
-    //     place_location: place.geometry.location.toString(),
-    //   });
-    //   // map.fitBounds(place.geometry.viewport);
-    //   // map.setCenter(location);
-    //   marker.setPlace({
-    //     placeId: place.place_id,
-    //     location: place.geometry.location,
-    //   });
-    //   marker.addListener('click', () => {
-    //     this.toggleBounce(marker)
-    //     infowindow.marker = marker;
-    //     infowindow.setContent(
-    //       '<Paper>'+
-    //       place.formatted_address+
-    //       place.geometry.location+
-    //       '</Paper>'
-    //     )
-    //     infowindow.open(this.state.map, infowindow.marker);
-    //   })
-    // });
-
     this.state.locations.map( loc => {
         loc = new window.google.maps.Marker({
         position: loc.location,
@@ -126,25 +86,19 @@ class MapApp extends React.Component {
         title: loc.title,
         address: loc.address,
         animation: window.google.maps.Animation.DROP,
-        type: loc.type
+        type: loc.type,
+        id: loc.id
         });
 
         loc.addListener('click', () => {
           this.toggleBounce(loc)
-          infowindow.marker = loc;
-          infowindow.setContent(
-            '<Paper>'+
-            loc.title+
-            '</Paper>'
-          )
-          infowindow.open(this.state.map, infowindow.marker);
+          this.createInfowindow(loc)
         });
         this.state.markers.push(loc)
     })
   }
 
   handleClick = (loc) => {
-    // this.state.markers.map( mar => mar.setMap(null))
     this.state.map.setCenter(loc.position);
     this.state.map.panBy(0, 0);
     this.toggleBounce(loc);
@@ -156,6 +110,46 @@ class MapApp extends React.Component {
     marker.setAnimation(window.google.maps.Animation.BOUNCE)
   }
 
+  createInfowindow(marker) {
+    this.state.infowindow.setContent(
+      '<Card>'+
+      'Loading Data...'+
+      '</Card>'
+    );
+    this.state.infowindow.open(this.state.map, marker);
+    this.foursquareInfowindow(marker)
+  }
+
+  foursquareInfowindow(marker) {
+    const clientId = "TPIDDHBKB2QFBWEV2MPDOFGUSWXCXGAA5IVOWEMN5ASR3UJW";
+    const clientSecret = "4HB1ZZJBVXC3F0BREBPSGXYK0VZ5ALS4XRNJZSBP1JROG0DE";
+    var url = `https://api.foursquare.com/v2/venues/${marker.id}?client_id=${clientId}&client_secret=${clientSecret}&v=20170621`;
+
+    fetch(url)
+      .then((response) => {
+        response.json()
+        .then((responseJson) => {
+          var data = responseJson.response.venue;
+          var photo = data.photos.groups[0].items[0];
+          var photoSize = "300x200";
+          var content = 
+          `<div class="infowindow">
+            <h2>${marker.title}</h2>
+            <img src="${photo.prefix}${photoSize}${photo.suffix}" alt="photo for ${marker.title}">
+            <span><b>Phone: </b>${data.contact.formattedPhone !== undefined? data.contact.formattedPhone : `not avalable :(`}</span>
+            <span><b>Address: </b>${data.location.formattedAddress}</span>
+            <span><b>Website: </b>${data.url !== undefined? `<a href=${data.url}>${data.url}</a>` : `not avalable :(`}</span>
+          </div>`
+          this.state.infowindow.setContent(content);
+        })
+      }).catch((error) => {
+        this.state.infowindow.setContent(
+          '<Paper>'+
+            'Sorry can\'t get data from the server ' +
+          '</Paper>'
+        );
+      })
+  }
 
   render() {
     return (
