@@ -73,51 +73,51 @@ class MapApp extends React.Component {
       infowindow: infowindow
     });
 
-    let marker = new window.google.maps.Marker({
-      map: map,
-      animation: window.google.maps.Animation.DROP
-    });
+    // let marker = new window.google.maps.Marker({
+    //   map: map,
+    //   animation: window.google.maps.Animation.DROP
+    // });
 
-    let autocomplete = new window.google.maps.places.Autocomplete(input);
-    autocomplete.bindTo('bounds', map);
-    autocomplete.addListener('place_changed', () => {
-
-      let place = autocomplete.getPlace();
-      // let location = place.geometry.location;
-      if (!place.geometry) {
-        // User entered the name of a Place that was not suggested and
-        // pressed the Enter key, or the Place Details request failed.
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-      }
-      if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-      } else {
-        map.setCenter(place.geometry.location);
-        map.setZoom(17);  // Why 17? Because it looks good.
-      }
-      this.setState({
-        place_formatted: place.formatted_address,
-        place_id: place.place_id,
-        place_location: place.geometry.location.toString(),
-      });
-      // map.fitBounds(place.geometry.viewport);
-      // map.setCenter(location);
-      marker.setPlace({
-        placeId: place.place_id,
-        location: place.geometry.location,
-      });
-      marker.addListener('click', () => {
-        infowindow.marker = marker;
-        infowindow.setContent(
-          '<Paper>'+
-          place.formatted_address+
-          place.geometry.location+
-          '</Paper>'
-        )
-        infowindow.open(this.state.map, infowindow.marker);
-      })
-    });
+    // let autocomplete = new window.google.maps.places.Autocomplete(input);
+    // autocomplete.bindTo('bounds', map);
+    // autocomplete.addListener('place_changed', () => {
+    //   let place = autocomplete.getPlace();
+    //   // let location = place.geometry.location;
+    //   if (!place.geometry) {
+    //     // User entered the name of a Place that was not suggested and
+    //     // pressed the Enter key, or the Place Details request failed.
+    //     window.alert("No details available for input: '" + place.name + "'");
+    //     return;
+    //   }
+    //   if (place.geometry.viewport) {
+    //     map.fitBounds(place.geometry.viewport);
+    //   } else {
+    //     map.setCenter(place.geometry.location);
+    //     map.setZoom(17); 
+    //   }
+    //   this.setState({
+    //     place_formatted: place.formatted_address,
+    //     place_id: place.place_id,
+    //     place_location: place.geometry.location.toString(),
+    //   });
+    //   // map.fitBounds(place.geometry.viewport);
+    //   // map.setCenter(location);
+    //   marker.setPlace({
+    //     placeId: place.place_id,
+    //     location: place.geometry.location,
+    //   });
+    //   marker.addListener('click', () => {
+    //     this.toggleBounce(marker)
+    //     infowindow.marker = marker;
+    //     infowindow.setContent(
+    //       '<Paper>'+
+    //       place.formatted_address+
+    //       place.geometry.location+
+    //       '</Paper>'
+    //     )
+    //     infowindow.open(this.state.map, infowindow.marker);
+    //   })
+    // });
 
     this.state.locations.map( loc => {
         loc = new window.google.maps.Marker({
@@ -128,9 +128,7 @@ class MapApp extends React.Component {
         animation: window.google.maps.Animation.DROP,
         type: loc.type
         });
-        // this.setState(state => ({
-        //   markers: state.contacts.concat([ loc ])
-        // }))
+
         loc.addListener('click', () => {
           this.toggleBounce(loc)
           infowindow.marker = loc;
@@ -153,6 +151,7 @@ class MapApp extends React.Component {
   }
 
   toggleBounce(marker) {
+    marker.setAnimation(null)
     this.state.markers.map((mar)=> mar.setAnimation(null))
     marker.setAnimation(window.google.maps.Animation.BOUNCE)
   }

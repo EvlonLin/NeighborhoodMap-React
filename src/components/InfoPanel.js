@@ -47,7 +47,9 @@ const styles = theme => ({
 
 class InfoPanel extends Component {
 	state = {
-	  value: "all"
+	  value: "all",
+	  query: ''
+	  
 	}
 
 	createList () {
@@ -83,10 +85,6 @@ class InfoPanel extends Component {
     this.setState({ value:newValue });
     this.createList();
   };
-
-  refreshMarkers () {
-
-  }
 
 	render() {
 		const { classes, markers, handleClick } = this.props;
