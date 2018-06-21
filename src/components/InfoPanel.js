@@ -19,6 +19,8 @@ import red from '@material-ui/core/colors/red';
 import Icon from '@material-ui/core/Icon';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import escapeRegExp from 'escape-string-regexp'
+import sortBy from 'sort-by'
 // import FoodIcon from '@material-ui/icons/Food';
 
 const styles = theme => ({
@@ -49,38 +51,67 @@ const styles = theme => ({
 
 class InfoPanel extends Component {
 	state = {
-	  value: '',
-	  type: "all"
+	  query: '',
+	  type: 'all'
 
 	}
 
 	createList () {
 		const { map, markers, handleClick } = this.props;
-		const { type } = this.state;
+		const { type, query } = this.state;
+
+		let showingContacts
+    if (query) {
+      const match = new RegExp(escapeRegExp(query), 'i')
+      showingContacts = markers.filter((marker) => match.test(marker.title))
+    } else {
+      showingContacts = markers
+    }
+
 		if (type === "all") {
-			return markers.map(loc => {
-				loc.setAnimation(window.google.maps.Animation.DROP)
-				loc.setMap(map)
+			markers.map( marker => marker.setMap(null))
+			return showingContacts.map(marker => {
+				marker.setAnimation(window.google.maps.Animation.DROP)
+				marker.setMap(map)
 				return(
-			 	<ListItem key={loc.title}  button onClick={e => handleClick(loc)}>
-			  	<ListItemText primary={loc.title} secondary={loc.address} />
+			 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+			  	<ListItemText primary={marker.title} secondary={marker.address} />
 				</ListItem>
 				);
 			})
 		} else {
-				markers.map( mar => mar.setMap(null))
-				return markers.map(loc => {
-					if (type === loc.type){
-						loc.setAnimation(window.google.maps.Animation.DROP)
-						loc.setMap(map)
+				markers.map( marker => marker.setMap(null))
+				return markers.map(marker => {
+					if (type === marker.type){
+						marker.setAnimation(window.google.maps.Animation.DROP)
+						marker.setMap(map)
 						return(
-					 	<ListItem key={loc.title}  button onClick={e => handleClick(loc)}>
-					  	<ListItemText primary={loc.title} secondary={loc.address} />
+					 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+					  	<ListItemText primary={marker.title} secondary={marker.address} />
 						</ListItem>
 						);
 					}
 				})
 			}
+	}
+
+		// 	if (type === "all") {
+		// 	return showingContacts.map(marker => {
+		// 		marker.setAnimation(window.google.maps.Animation.DROP)
+		// 		marker.setMap(map)
+		// 		return(
+		// 	 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+		// 	  	<ListItemText primary={marker.title} secondary={marker.address} />
+		// 		</ListItem>
+		// 		);
+		// 	})
+		// } 
+
+	filterList = (query) => {
+		const { map, markers, handleClick } = this.props;
+		const { type } = this.state;
+
+		this.setState({ query })
 	}
 
 	handleButton = (newType) => {
@@ -90,15 +121,19 @@ class InfoPanel extends Component {
 
 	render() {
 		const { classes, markers, handleClick } = this.props;
+		const { query } = this.state;
     return (
 	    <div className="panel">
 		    <TextField
 		    id="search"
-		    label="Enter a location"
+		    label="Search a location"
 		    margin="normal"
 		    type="text"
 		    placeholder=""
-		    fullWidth={true}
+		    fullWidth
+		    value={ query }
+		    aria-labelledby="location filter"
+		    onChange={(event) => this.filterList(event.target.value)}
 		    />
 		    <div id="buttons" className={classes.root2}>
 		      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
