@@ -45,17 +45,19 @@ const styles = theme => ({
 });
 
 
+
+
 class InfoPanel extends Component {
 	state = {
-	  value: "all",
-	  query: ''
-	  
+	  value: '',
+	  type: "all"
+
 	}
 
 	createList () {
 		const { map, markers, handleClick } = this.props;
-		const { value } = this.state;
-		if (value === "all") {
+		const { type } = this.state;
+		if (type === "all") {
 			return markers.map(loc => {
 				loc.setAnimation(window.google.maps.Animation.DROP)
 				loc.setMap(map)
@@ -68,7 +70,7 @@ class InfoPanel extends Component {
 		} else {
 				markers.map( mar => mar.setMap(null))
 				return markers.map(loc => {
-					if (value === loc.type){
+					if (type === loc.type){
 						loc.setAnimation(window.google.maps.Animation.DROP)
 						loc.setMap(map)
 						return(
@@ -81,8 +83,8 @@ class InfoPanel extends Component {
 			}
 	}
 
-	handleButton = (newValue) => {
-    this.setState({ value:newValue });
+	handleButton = (newType) => {
+    this.setState({ type:newType });
     this.createList();
   };
 
