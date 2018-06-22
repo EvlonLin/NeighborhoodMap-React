@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
@@ -30,7 +31,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    height: 450,
+    height: 425,
     top:10
   },
   root2: {
@@ -41,6 +42,7 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit * 2,
   },
+
 });
 
 class InfoPanel extends Component {
@@ -97,6 +99,7 @@ class InfoPanel extends Component {
 				})
 		}	else {
 				map.setCenter({lat: 43.6547878, lng: -79.3967198});
+				map.setZoom(14);
 				map.panBy(0, 0);
 				markers.map( marker => marker.setMap(null))
 				return markers.map(marker => {
@@ -114,9 +117,11 @@ class InfoPanel extends Component {
 	}
 
 	defaultList (newType) {
+		this.props.infowindow.close()
 		this.setState({ type:newType });
 		this.setState({ query:'' })
 		this.props.map.setCenter({lat: 43.6547878, lng: -79.3967198});
+		this.props.map.setZoom(14);
 		this.props.map.panBy(0, 0);
 	}
 
@@ -126,6 +131,7 @@ class InfoPanel extends Component {
 	}
 
 	handleButton = (newType) => {
+		this.props.infowindow.close()
     this.setState({ type:newType });
     this.createList();
   };
@@ -147,15 +153,21 @@ class InfoPanel extends Component {
 		    onChange={(event) => this.filterList(event.target.value)}
 		    />
 		    <div id="buttons" className={classes.root2}>
-		      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
-		        <AddIcon />
-		      </Button>
-		      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
-		        <Icon>edit_icon</Icon>
-		      </Button>
-		      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
-		        <DeleteIcon />
-		      </Button>
+		    	<Tooltip title="Restaurants Filter" placement="top">
+			      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+			        <Icon>restaurant</Icon>
+			      </Button>
+		      </Tooltip>
+		      <Tooltip title="FunPlaces Filter" placement="top">
+			      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+			        <Icon>local_play</Icon>
+			      </Button>
+		      </Tooltip>
+		      <Tooltip title="Reset" placement="top">
+			      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
+			        <Icon style={{ fontSize: 30 }}>refresh</Icon>
+			      </Button>
+		      </Tooltip>
 		    </div>
 		    <div className={classes.root}>
 		      <List>
@@ -172,5 +184,5 @@ InfoPanel.propTypes = {
 export default withStyles(styles)(InfoPanel);
 // if (typeof google === 'object' && typeof google.maps === 'object')
 // baefecde7ea358ba833d351ab220ed01 zomato
-// J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3 client id foursquare
-// VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z client secret
+// J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3 client id foursquareTPIDDHBKB2QFBWEV2MPDOFGUSWXCXGAA5IVOWEMN5ASR3UJW
+// VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z client secret 4HB1ZZJBVXC3F0BREBPSGXYK0VZ5ALS4XRNJZSBP1JROG0DE

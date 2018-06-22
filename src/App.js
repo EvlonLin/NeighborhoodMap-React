@@ -8,10 +8,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 class MapApp extends React.Component {
   state = {
     markers: [],
+    preMarker: '',
     infowindow: '',
     locations: [
       {
@@ -93,15 +95,19 @@ class MapApp extends React.Component {
         loc.addListener('click', () => {
           this.toggleBounce(loc)
           this.createInfowindow(loc)
+          map.setCenter(loc.position);
+          map.panBy(0, -200);
         });
         this.state.markers.push(loc)
     })
   }
 
-  handleClick = (loc) => {
-    this.state.map.setCenter(loc.position);
-    this.state.map.panBy(0, 0);
-    this.toggleBounce(loc);
+  handleClick = (marker) => {
+    this.state.map.setCenter(marker.position);
+    this.state.map.setZoom(16);
+    this.state.map.panBy(0, -200);
+    this.createInfowindow(marker);
+    this.toggleBounce(marker);
   }
 
   toggleBounce(marker) {
@@ -112,17 +118,17 @@ class MapApp extends React.Component {
 
   createInfowindow(marker) {
     this.state.infowindow.setContent(
-      '<Card>'+
-      'Loading Data...'+
-      '</Card>'
+      '<div class="infowindow">'+
+      '<h2>Loading...</h2>'+
+      '</div>'
     );
     this.state.infowindow.open(this.state.map, marker);
     this.foursquareInfowindow(marker)
   }
 
   foursquareInfowindow(marker) {
-    const clientId = "TPIDDHBKB2QFBWEV2MPDOFGUSWXCXGAA5IVOWEMN5ASR3UJW";
-    const clientSecret = "4HB1ZZJBVXC3F0BREBPSGXYK0VZ5ALS4XRNJZSBP1JROG0DE";
+    const clientId = "J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3";
+    const clientSecret = "VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z";
     var url = `https://api.foursquare.com/v2/venues/${marker.id}?client_id=${clientId}&client_secret=${clientSecret}&v=20170621`;
 
     fetch(url)
@@ -133,21 +139,22 @@ class MapApp extends React.Component {
           var photo = data.photos.groups[0].items[0];
           var photoSize = "300x200";
           var content = 
-          `<div class="infowindow">
+          `<div>
             <h2>${marker.title}</h2>
-            <img src="${photo.prefix}${photoSize}${photo.suffix}" alt="photo for ${marker.title}">
+            <img class="mainPhoto" src="${photo.prefix}${photoSize}${photo.suffix}" alt="photo for ${marker.title}">
             <span><b>Phone: </b>${data.contact.formattedPhone !== undefined? data.contact.formattedPhone : `not avalable :(`}</span>
-            <span><b>Address: </b>${data.location.formattedAddress}</span>
+            <span><b>Address: </b>${data.location.address},${data.location.city}</span>
             <span><b>Website: </b>${data.url !== undefined? `<a href=${data.url}>${data.url}</a>` : `not avalable :(`}</span>
+            <a class="footNote" href=https://developer.foursquare.com/>Powered by Foursquare</a>
           </div>`
           this.state.infowindow.setContent(content);
+        }).catch((error) => {
+          this.state.infowindow.setContent(
+            '<Paper>'+
+              'Sorry can\'t get data from the server ' +
+            '</Paper>'
+          );
         })
-      }).catch((error) => {
-        this.state.infowindow.setContent(
-          '<Paper>'+
-            'Sorry can\'t get data from the server ' +
-          '</Paper>'
-        );
       })
   }
 
@@ -161,6 +168,7 @@ class MapApp extends React.Component {
       locations={this.state.locations}
       markers={this.state.markers}
       map={this.state.map}
+      infowindow={this.state.infowindow}
       />
       </div>
     );

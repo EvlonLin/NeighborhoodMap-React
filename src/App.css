@@ -14,8 +14,14 @@ h1 {
   letter-spacing: 1px;
 }
 
+h2 {
+  text-align: center;
+}
+
 span {
   display: block;
+  max-width: 40ch;
+  line-height: 18px;
 }
 
 .app {
@@ -27,6 +33,18 @@ span {
   height: 100%;
   width: 100%;
   position: relative;
+}
+
+.gm-style-iw {
+  width: 100% !important;
+  height: auto !important;
+  left: 0 !important;
+  top: 0 !important;
+  padding-left: 25px;
+}
+
+.mainPhoto {
+  padding-bottom: 5px;
 }
 
 .panel {
