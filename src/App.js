@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class MapApp extends React.Component {
   state = {
@@ -72,7 +73,7 @@ class MapApp extends React.Component {
     mapview.style.height = window.innerHeight + "px";
     var map = new window.google.maps.Map(mapview, {
         center: {lat: 43.6547878, lng: -79.3967198},
-        zoom: 14,
+        zoom: 13,
         mapTypeControl: false,
         styles: MapStyle
     });

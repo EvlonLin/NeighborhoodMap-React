@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import MediaQuery from 'react-responsive';
+import grey from '@material-ui/core/colors/grey';
+import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -24,7 +29,13 @@ import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 // import FoodIcon from '@material-ui/icons/Food';
 
+const theme = createMuiTheme({
+	palette: {
+    primary: { main: grey[50] }
+  },
+});
 const styles = theme => ({
+
   root: {
     width: '100%',
     maxWidth: 360,
@@ -42,13 +53,26 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit * 2,
   },
-
+  menu: {
+  	position:'absolute',
+  	bottom: 630,
+  	left: 320,
+    '&:hover': {
+      background: 'rgba(240, 240, 240, 0)',
+    },
+  },
+  menuClose: {
+		bottom: 325,
+		left: 323,
+  },
 });
 
 class InfoPanel extends Component {
 	state = {
+		width: window.innerWidth,
 	  query: '',
-	  type: 'all'
+	  type: 'all',
+	  slideMenu: true,
 	}
 
 	createList () {
@@ -87,7 +111,7 @@ class InfoPanel extends Component {
 				})
 		}	else {
 				map.setCenter({lat: 43.6547878, lng: -79.3967198});
-				map.setZoom(14);
+				map.setZoom(13);
 				map.panBy(0, 0);
 				markers.map( marker => marker.setMap(null))
 				return markers.map(marker => {
@@ -105,7 +129,7 @@ class InfoPanel extends Component {
 		this.setState({ type:newType });
 		this.setState({ query:'' })
 		this.props.map.setCenter({lat: 43.6547878, lng: -79.3967198});
-		this.props.map.setZoom(14);
+		this.props.map.setZoom(13);
 		this.props.map.panBy(0, 0);
 	}
 
@@ -129,13 +153,19 @@ class InfoPanel extends Component {
 		this.props.infowindow.close()
     this.setState({ type:newType });
     this.createList();
-  };
+  }
+
+  handleSlide = () => {
+  	const currentState = this.state.slideMenu;
+  	this.setState({ slideMenu: !currentState });
+  }
 
 	render() {
 		const { classes, markers, handleClick } = this.props;
 		const { query } = this.state;
+
     return (
-	    <div className="panel">
+	    <nav className={this.state.slideMenu? 'open' : null} id="sideMenu">
 		    <TextField
 		    id="search"
 		    label="Search a location"
@@ -169,8 +199,29 @@ class InfoPanel extends Component {
 						{this.createList()}
 		      </List>
     		</div>
+	      <p className="footer">
+	        App Created by 
+	      </p>
 	      <img className="logo" src={require('../img/logo.png')} alt={'Logo for EvlonLin'}/>
-	    </div>
+	      <Tooltip title="Hide Menu" placement="top">
+		      <IconButton 
+		      aria-label="delete" 
+		      className={classNames(classes.menu, {
+            [classes.menuClose]: this.state.slideMenu === false,
+          })} 
+          onClick={this.handleSlide}
+          >
+		      	<MuiThemeProvider theme={theme}>
+				    	<Icon style={{ fontSize: 48 }} color={this.state.slideMenu ? "action":"primary"}>
+				    	{this.state.slideMenu ? "navigate_before":"navigate_next"}
+				    	</Icon>
+				    </MuiThemeProvider>
+				  </IconButton>
+			  </Tooltip>
+				<MediaQuery minDeviceWidth={1224}>
+				<div>{this.handleSlide()}</div>
+	    	</MediaQuery>
+	    </nav>
     );
 	}
 }
