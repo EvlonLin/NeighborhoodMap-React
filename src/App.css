@@ -5,6 +5,10 @@ html, body, .root {
   padding: 0;
 }
 
+h1, h2, span, p {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 h1 {
   color: rgba(240, 240, 240);
   font-size: 26px;
@@ -62,9 +66,23 @@ span {
   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
-#container{
+.MuiListItem-root-81{
+  padding-right: 0 !important;
+  padding-left: 16px !important;
 }
 
+.footer{
+  text-align: center;
+  margin-top: 48px; 
+  max-width: 130px;
+  display: inline-flex;
+  padding-left: 138px;
+  color: #334D60;
+}
+.logo{
+  float: right;
+  padding-top: 20px;
+}
 .MuiFormControl-root-1{
   primary: green
 }

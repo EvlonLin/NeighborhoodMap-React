@@ -19,42 +19,42 @@ class MapApp extends React.Component {
       {
         title: 'Pizza Nova', 
         location: {lat: 43.6651599, lng: -79.3883925}, 
-        address: '997 Bay St, Toronto, ON M5S 3A6',
+        address: '997 Bay St, Toronto',
         type: "food",
         id: "4b958823f964a520d8a734e3"
       },
       {
         title: 'Jimmy\'s Coffee',
         location: {lat: 43.6452575, lng: -79.4003085},
-        address: '107 Portland St, Toronto ON M5V 2N3',
+        address: '107 Portland St, Toronto',
         type: "food",
         id: "4b2274c1f964a5200f4724e3"
       },
       {
         title: 'Mark Andrew Hair Studio',
         location: {lat: 43.6512735, lng: -79.3953462}, 
-        address: '51 Sullivan St, Toronto ON',
+        address: '51 Sullivan St, Toronto',
         type: "fun",
         id: "4b11bcf0f964a5207a8323e3"
       },
       {
         title: 'Krispy Kreme Doughnut Café',
         location: {lat: 43.6617052, lng: -79.4082591}, 
-        address: '215 Harbord St, Toronto ON M5S 1H6',
+        address: '215 Harbord St, Toronto',
         type: "food",
         id: "4cdb1125d4ecb1f7d9777748"
       },
       {
         title: 'Lever Brothers soap factory', 
         location: {lat: 43.6531261, lng: -79.3479356}, 
-        address: '21 Don Roadway, Toronto ON',
+        address: '21 Don Roadway, Toronto',
         type: "fun",
         id: "531f6f3b498e347c2c14d59c"
       },
       {
         title: 'The Rosemont Fitness', 
         location: {lat: 43.645604, lng: -79.390136}, 
-        address: '50 John Street, Toronto ON',
+        address: '50 John Street, Toronto',
         type: "fun",
         id: "571d37de498ef2ba27feb6ef"
       }

@@ -69,11 +69,7 @@ class InfoPanel extends Component {
 				if (type === marker.type){
 					marker.setAnimation(window.google.maps.Animation.BOUNCE)
 					marker.setMap(map)
-					return(
-				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-				  	<ListItemText primary={marker.title} secondary={marker.address} />
-					</ListItem>
-					);
+					return this.ListItem(marker);
 				}
 			})
 		} else if (query) {
@@ -81,21 +77,13 @@ class InfoPanel extends Component {
 				return showingContacts.map(marker => {
 					marker.setAnimation(window.google.maps.Animation.BOUNCE)
 					marker.setMap(map)
-					return(
-				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-				  	<ListItemText primary={marker.title} secondary={marker.address} />
-					</ListItem>
-					);
+					return this.ListItem(marker);
 				})
 		} else if (type === 'all') {
 				return markers.map(marker => {
 					marker.setAnimation(window.google.maps.Animation.DROP)
 					marker.setMap(map)
-					return(
-				 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-				  	<ListItemText primary={marker.title} secondary={marker.address} />
-					</ListItem>
-					);
+					return this.ListItem(marker);
 				})
 		}	else {
 				map.setCenter({lat: 43.6547878, lng: -79.3967198});
@@ -106,11 +94,7 @@ class InfoPanel extends Component {
 					if (type === marker.type){
 						marker.setAnimation(window.google.maps.Animation.DROP)
 						marker.setMap(map)
-						return(
-					 	<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
-					  	<ListItemText primary={marker.title} secondary={marker.address} />
-						</ListItem>
-						);
+						return this.ListItem(marker);
 					}
 				})
 		}
@@ -125,6 +109,17 @@ class InfoPanel extends Component {
 		this.props.map.panBy(0, 0);
 	}
 
+	ListItem (marker) {
+		const { handleClick } = this.props;
+		return(
+		<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+			  <Avatar>
+            {marker.type === "food" ? <Icon>restaurant</Icon> : <Icon>local_play</Icon> }
+        </Avatar>
+			<ListItemText primary={marker.title} secondary={marker.address} />
+		</ListItem>
+		);
+	}
 
 	filterList = (query) => {
 		this.setState({ query })
@@ -174,6 +169,7 @@ class InfoPanel extends Component {
 						{this.createList()}
 		      </List>
     		</div>
+	      <img className="logo" src={require('../img/logo.png')} alt={'Logo for EvlonLin'}/>
 	    </div>
     );
 	}
