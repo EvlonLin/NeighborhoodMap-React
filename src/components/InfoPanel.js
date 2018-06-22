@@ -50,6 +50,9 @@ const styles = theme => ({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
+  list: {
+  	padding: '12px 0 12px 20px',
+  },
   button: {
     margin: theme.spacing.unit * 2,
   },
@@ -134,9 +137,9 @@ class InfoPanel extends Component {
 	}
 
 	ListItem (marker) {
-		const { handleClick } = this.props;
+		const { classes, handleClick } = this.props;
 		return(
-		<ListItem key={marker.title}  button onClick={e => handleClick(marker)}>
+		<ListItem key={marker.title} disableGutters button className={classes.list} onClick={e => handleClick(marker)}>
 			  <Avatar>
             {marker.type === "food" ? <Icon>restaurant</Icon> : <Icon>local_play</Icon> }
         </Avatar>
@@ -218,12 +221,14 @@ class InfoPanel extends Component {
 				    </MuiThemeProvider>
 				  </IconButton>
 			  </Tooltip>
-				<MediaQuery minDeviceWidth={1224}>
-				<div>{this.handleSlide()}</div>
-	    	</MediaQuery>
 	    </nav>
     );
 	}
+
+	 //  onResize = () => {
+  //   if (handleWidth > )
+  // }
+
 }
 InfoPanel.propTypes = {
   classes: PropTypes.object.isRequired,

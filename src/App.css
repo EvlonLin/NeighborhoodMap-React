@@ -92,12 +92,6 @@ nav.open {
   float: right;
   padding-top: 38px;
 }
-.MuiFormControl-root-1{
-  primary: green
-}
-.InfoPanel-menu-4{
-  box-shadow: none !important;
-}
 /*@media only screen and (min-width: 1024px) {
   nav.open {
     -webkit-transform: translate(-385px, 0);
