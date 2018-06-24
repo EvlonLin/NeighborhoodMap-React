@@ -41,7 +41,8 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    height: 'calc(88% - 148px)',
+    height: 'calc(95% - 148px)',
+    'max-height': '430px',
     top:'2%',
     margin: '0 0 8% 0',
   },
@@ -51,7 +52,7 @@ const styles = theme => ({
     alignItems: 'flex-end',
   },
   list: {
-		'padding-left':'20px'
+		'padding-left':'calc(5px + 3%)'
   },
   listText: {
   	'white-space': 'nowrap',
@@ -59,26 +60,19 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit * 2,
   },
-  menu: {
-  	position:'fixed',
-  	bottom: 630,
-  	left: 320,
-    '&:hover': {
-      background: 'rgba(240, 240, 240, 0)',
-    },
-  },
-  menuClose: {
-		bottom: 325,
-		left: 323,
+  menuButton: {
+  	position: 'fixed',
+  	'z-index': '2',
+  	top: '20px',
+  	left: '20px',
   },
 });
 
 class InfoPanel extends Component {
 	state = {
-		width: window.innerWidth,
 	  query: '',
 	  type: 'all',
-	  slideMenu: true,
+	  active: false,
 	}
 
 	createList () {
@@ -161,9 +155,9 @@ class InfoPanel extends Component {
     this.createList();
   }
 
-  handleSlide = () => {
-  	const currentState = this.state.slideMenu;
-  	this.setState({ slideMenu: !currentState });
+  handleSlide = () =>{
+  	const currentState = this.state.active;
+  	this.setState({ active: !currentState });
   }
 
 	render() {
@@ -171,56 +165,46 @@ class InfoPanel extends Component {
 		const { query } = this.state;
 
     return (
-	    <nav className={this.state.slideMenu? 'open' : null} id="sideMenu">
-		    <TextField
-		    id="search"
-		    label="Search a location"
-		    margin="normal"
-		    type="text"
-		    placeholder=""
-		    fullWidth
-		    value={ query }
-		    aria-labelledby="location filter"
-		    onChange={(event) => this.filterList(event.target.value)}
-		    />
-		    <div id="buttons" className={classes.root2}>
-		    	<Tooltip title="Restaurants Filter" placement="top">
-			      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
-			        <Icon>restaurant</Icon>
-			      </Button>
-		      </Tooltip>
-		      <Tooltip title="FunPlaces Filter" placement="top">
-			      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
-			        <Icon>local_play</Icon>
-			      </Button>
-		      </Tooltip>
-		      <Tooltip title="Reset" placement="top">
-			      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
-			        <Icon style={{ fontSize: 30 }}>refresh</Icon>
-			      </Button>
-		      </Tooltip>
-		    </div>
-		    <div className={classes.root}>
-		      <List>
-						{this.createList()}
-		      </List>
-    		</div>
-	      <Tooltip enterDelay={1000} title={this.state.slideMenu ? "Hide Menu":"Show Menu"} placement="top">
-		      <IconButton 
-		      aria-label="delete" 
-		      className={classNames(classes.menu, {
-            [classes.menuClose]: this.state.slideMenu === false,
-          })} 
-          onClick={this.handleSlide}
-          >
-		      	<MuiThemeProvider theme={theme}>
-				    	<Icon style={{ fontSize: 48 }} color={this.state.slideMenu ? "action":"primary"}>
-				    	{this.state.slideMenu ? "navigate_before":"navigate_next"}
-				    	</Icon>
-				    </MuiThemeProvider>
-				  </IconButton>
-			  </Tooltip>
-	    </nav>
+    	<div>
+    	  <Button variant="fab" id="menu" className={classes.menuButton} onClick={this.handleSlide}>
+			    <Icon>menu</Icon>
+			  </Button>
+		    <nav className={this.state.active ? 'open': null}  id="sideMenu">
+			    <TextField
+			    id="search"
+			    label="Search a location"
+			    margin="normal"
+			    type="text"
+			    placeholder=""
+			    fullWidth
+			    value={ query }
+			    aria-labelledby="location filter"
+			    onChange={(event) => this.filterList(event.target.value)}
+			    />
+			    <div id="buttons" className={classes.root2}>
+			    	<Tooltip title="Restaurants Filter" placement="top">
+				      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+				        <Icon>restaurant</Icon>
+				      </Button>
+			      </Tooltip>
+			      <Tooltip title="FunPlaces Filter" placement="top">
+				      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+				        <Icon>local_play</Icon>
+				      </Button>
+			      </Tooltip>
+			      <Tooltip title="Reset" placement="top">
+				      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
+				        <Icon style={{ fontSize: 30 }}>refresh</Icon>
+				      </Button>
+			      </Tooltip>
+			    </div>
+			    <div className={classes.root}>
+			      <List>
+							{this.createList()}
+			      </List>
+	    		</div>
+		    </nav>
+		  </div>  
     );
 	}
 

@@ -11,6 +11,7 @@
     "react": "^16.4.0",
     "react-async-script-loader": "^0.3.0",
     "react-autosuggest": "^9.3.4",
+    "react-burger-menu": "^2.5.2",
     "react-dom": "^16.4.0",
     "react-google-maps": "^9.4.5",
     "react-places-autocomplete": "^7.1.2",
