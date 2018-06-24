@@ -38,12 +38,12 @@ const styles = theme => ({
 
   root: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    height: 425,
-    top:10
+    height: 'calc(88% - 148px)',
+    top:'2%',
+    margin: '0 0 8% 0',
   },
   root2: {
     display: 'flex',
@@ -51,13 +51,16 @@ const styles = theme => ({
     alignItems: 'flex-end',
   },
   list: {
-  	padding: '12px 0 12px 20px',
+		'padding-left':'20px'
+  },
+  listText: {
+  	'white-space': 'nowrap',
   },
   button: {
     margin: theme.spacing.unit * 2,
   },
   menu: {
-  	position:'absolute',
+  	position:'fixed',
   	bottom: 630,
   	left: 320,
     '&:hover': {
@@ -143,7 +146,7 @@ class InfoPanel extends Component {
 			  <Avatar>
             {marker.type === "food" ? <Icon>restaurant</Icon> : <Icon>local_play</Icon> }
         </Avatar>
-			<ListItemText primary={marker.title} secondary={marker.address} />
+			<ListItemText primary={marker.title} secondary={marker.address} className={classes.listText}/>
 		</ListItem>
 		);
 	}
@@ -202,11 +205,7 @@ class InfoPanel extends Component {
 						{this.createList()}
 		      </List>
     		</div>
-	      <p className="footer">
-	        App Created by 
-	      </p>
-	      <img className="logo" src={require('../img/logo.png')} alt={'Logo for EvlonLin'}/>
-	      <Tooltip title="Hide Menu" placement="top">
+	      <Tooltip enterDelay={1000} title={this.state.slideMenu ? "Hide Menu":"Show Menu"} placement="top">
 		      <IconButton 
 		      aria-label="delete" 
 		      className={classNames(classes.menu, {

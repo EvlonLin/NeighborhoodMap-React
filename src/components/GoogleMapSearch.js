@@ -29,8 +29,10 @@ class GoogleMapSearch extends Component {
 
   render() {
     return (
-      <div id='map'>
-      </div>
+        <p className="footer">
+          App Created by 
+        </p>
+        <img className="logo" src={require('../img/logo.png')} alt={'Logo for EvlonLin'}/>
     );
   }
 }
