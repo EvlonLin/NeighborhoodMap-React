@@ -4,22 +4,11 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.2.1",
-    "@material-ui/icons": "^1.1.0",
-    "autosuggest-highlight": "^3.1.1",
     "escape-string-regexp": "^1.0.5",
-    "google-maps-react": "^2.0.2",
     "react": "^16.4.0",
     "react-async-script-loader": "^0.3.0",
-    "react-autosuggest": "^9.3.4",
-    "react-burger-menu": "^2.5.2",
     "react-dom": "^16.4.0",
-    "react-google-maps": "^9.4.5",
-    "react-places-autocomplete": "^7.1.2",
-    "react-resize-detector": "^3.0.1",
-    "react-responsive": "^4.1.0",
-    "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
-    "recompose": "^0.27.1",
     "sort-by": "^1.2.0"
   },
   "scripts": {

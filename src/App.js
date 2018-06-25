@@ -3,18 +3,11 @@ import "./App.css"
 import InfoPanel from "./components/InfoPanel"
 import scriptLoader from 'react-async-script-loader';
 import { MapStyle } from "./MapStyle.js"
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 class MapApp extends React.Component {
+  // setup the variables
   state = {
     markers: [],
-    preMarker: '',
     infowindow: '',
     locations: [
       {
@@ -61,29 +54,30 @@ class MapApp extends React.Component {
       }
     ],
     map: {},
+    bounds: '',
   }
+
+  //run initMap function when open the app
   componentDidMount() {
     window.initMap = this.initMap;
   }
 
   initMap = () => {
+    //create map elements
     var mapview = document.getElementById("map");
-    var input = document.getElementById("search");
     var infowindow = new window.google.maps.InfoWindow();
+    var bounds = new window.google.maps.LatLngBounds();
     mapview.style.height = window.innerHeight + "px";
+    //setup map
     var map = new window.google.maps.Map(mapview, {
         center: {lat: 43.6547878, lng: -79.3967198},
-        zoom: 13,
+        zoom: 14,
         mapTypeControl: false,
         styles: MapStyle
     });
-    this.setState({
-      map: map,
-      infowindow: infowindow
-    });
-
+    //setup markers
     this.state.locations.map( loc => {
-        loc = new window.google.maps.Marker({
+      loc = new window.google.maps.Marker({
         position: loc.location,
         map: map,
         title: loc.title,
@@ -91,32 +85,56 @@ class MapApp extends React.Component {
         animation: window.google.maps.Animation.DROP,
         type: loc.type,
         id: loc.id
-        });
-
-        loc.addListener('click', () => {
-          this.toggleBounce(loc)
-          this.createInfowindow(loc)
-          map.setCenter(loc.position);
-          map.panBy(0, -200);
-        });
-        this.state.markers.push(loc)
+      });
+      bounds.extend(loc.position);
+      loc.addListener('click', () => {
+        this.toggleBounce(loc)
+        this.createInfowindow(loc)
+        map.setCenter(loc.position);
+        map.panBy(0, -200);
+      });
+      this.state.markers.push(loc)
+      return null
     })
+    //save value into state
+    this.setState({
+      map: map,
+      infowindow: infowindow,
+      bounds: bounds,
+    });
+    this.handleresizeMapZoom()
   }
 
-  handleClick = (marker) => {
+  //event handler for markers onclick event
+  handleMarkersClick = (marker) => {
     this.state.map.setCenter(marker.position);
     this.state.map.setZoom(16);
-    this.state.map.panBy(0, -200);
+    this.state.map.panBy(0, -250);
     this.createInfowindow(marker);
     this.toggleBounce(marker);
   }
 
+  //event handler for resize map center for different window sizes
+  handleresizeMapZoom = () => {
+    const { map, bounds } = this.state;
+    if (window.innerWidth >= 1177) {
+      map.setZoom(14);
+    } else if (window.innerWidth >= 700) {
+      map.setZoom(13);
+    } else {
+      map.fitBounds(bounds);
+    }
+    map.panBy(0, 0);
+  }
+
+  //change markers animatiom for filter search
   toggleBounce(marker) {
     marker.setAnimation(null)
     this.state.markers.map((mar)=> mar.setAnimation(null))
     marker.setAnimation(window.google.maps.Animation.BOUNCE)
   }
 
+  //create infowindow
   createInfowindow(marker) {
     this.state.infowindow.setContent(
       '<div class="infowindow">'+
@@ -127,14 +145,22 @@ class MapApp extends React.Component {
     this.foursquareInfowindow(marker)
   }
 
+  //sending Ajax requese to foursquare
   foursquareInfowindow(marker) {
     const clientId = "J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3";
     const clientSecret = "VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z";
+    var errorMessage = `<p>Sorry can't get data from the server</p>`
     var url = `https://api.foursquare.com/v2/venues/${marker.id}?client_id=${clientId}&client_secret=${clientSecret}&v=20170621`;
 
     fetch(url)
       .then((response) => {
+        //log error message when failed to get the data
+        if (response.status !== 200) {
+          this.state.infowindow.setContent(errorMessage);
+          return null
+        }
         response.json()
+        //getting the result and use it to make infowindow contents
         .then((responseJson) => {
           var data = responseJson.response.venue;
           var photo = data.photos.groups[0].items[0];
@@ -142,35 +168,32 @@ class MapApp extends React.Component {
           var content = 
           `<div>
             <h2>${marker.title}</h2>
-            <img class="mainPhoto" src="${photo.prefix}${photoSize}${photo.suffix}" alt="photo for ${marker.title}">
+            <img class="mainPhoto" src="${photo.prefix}${photoSize}${photo.suffix}" alt="photo for ${marker.title}" aria-label="photo for ${marker.title}">
             <span><b>Phone: </b>${data.contact.formattedPhone !== undefined? data.contact.formattedPhone : `not avalable :(`}</span>
             <span><b>Address: </b>${data.location.address},${data.location.city}</span>
             <span><b>Website: </b>${data.url !== undefined? `<a href=${data.url}>${data.url}</a>` : `not avalable :(`}</span>
             <a class="footNote" href=https://developer.foursquare.com/>Powered by Foursquare</a>
           </div>`
           this.state.infowindow.setContent(content);
-        }).catch((error) => {
-          this.state.infowindow.setContent(
-            '<Paper>'+
-              'Sorry can\'t get data from the server ' +
-            '</Paper>'
-          );
         })
-      })
+      }).catch((error) => {
+          this.state.infowindow.setContent(errorMessage);
+        })
   }
-
+  //passing parent data to child
   render() {
     return (
       <div className="container">
-      <div id="map"/>
-      <InfoPanel
-      searchPlace={this.searchPlace}
-      handleClick={this.handleClick}
-      locations={this.state.locations}
-      markers={this.state.markers}
-      map={this.state.map}
-      infowindow={this.state.infowindow}
-      />
+        <InfoPanel
+        searchPlace={this.searchPlace}
+        handleClick={this.handleMarkersClick}
+        resizeMapZoom={this.handleresizeMapZoom}
+        locations={this.state.locations}
+        markers={this.state.markers}
+        map={this.state.map}
+        infowindow={this.state.infowindow}
+        />
+        <div id="map"/>
       </div>
     );
   }

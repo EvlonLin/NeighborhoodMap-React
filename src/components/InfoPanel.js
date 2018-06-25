@@ -1,42 +1,20 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import MediaQuery from 'react-responsive';
-import grey from '@material-ui/core/colors/grey';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import Autosuggest from 'react-autosuggest';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import red from '@material-ui/core/colors/red';
 import Icon from '@material-ui/core/Icon';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
 import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
-// import FoodIcon from '@material-ui/icons/Food';
 
-const theme = createMuiTheme({
-	palette: {
-    primary: { main: grey[50] }
-  },
-});
+// CSS styles for material-ui elements
 const styles = theme => ({
-
-  root: {
+  listContainer: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
@@ -46,21 +24,28 @@ const styles = theme => ({
     top:'2%',
     margin: '0 0 8% 0',
   },
-  root2: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
   list: {
 		'padding-left':'calc(5px + 3%)'
   },
   listText: {
   	'white-space': 'nowrap',
   },
+  buttonList: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
   button: {
     margin: theme.spacing.unit * 2,
   },
-  menuButton: {
+  menuButtonOff: {
+  	position: 'fixed',
+  	'z-index': '2',
+  	top: '20px',
+  	left: '20px',
+  },
+  menuButtonOn: {
+  	background: 'linear-gradient(45deg, #26A422 100%, #2196f3 0%)',
   	position: 'fixed',
   	'z-index': '2',
   	top: '20px',
@@ -74,19 +59,19 @@ class InfoPanel extends Component {
 	  type: 'all',
 	  active: false,
 	}
-
+	//generating the list items
 	createList () {
-		const { map, markers, handleClick } = this.props;
+		const { map, markers, resizeMapZoom } = this.props;
 		const { type, query } = this.state;
-
 		let showingContacts
+		//build up the search engin
     if (query) {
       const match = new RegExp(escapeRegExp(query), 'i')
       showingContacts = markers.filter((marker) => match.test(marker.title))
     } else {
       showingContacts = markers
     }
-
+    //filter the search result for search engin
 		if (query && type!== 'all') {
 			markers.map( marker => marker.setMap(null))
 			return showingContacts.map(marker => {
@@ -95,24 +80,30 @@ class InfoPanel extends Component {
 					marker.setMap(map)
 					return this.ListItem(marker);
 				}
+				return null
 			})
-		} else if (query) {
+		} 
+		//filter the search result for filter buttons and search engin
+		else if (query) {
 				markers.map( marker => marker.setMap(null))
 				return showingContacts.map(marker => {
 					marker.setAnimation(window.google.maps.Animation.BOUNCE)
 					marker.setMap(map)
 					return this.ListItem(marker);
 				})
-		} else if (type === 'all') {
+		} 
+		//setup initial list items
+		else if (type === 'all') {
 				return markers.map(marker => {
 					marker.setAnimation(window.google.maps.Animation.DROP)
 					marker.setMap(map)
 					return this.ListItem(marker);
 				})
-		}	else {
+		}	
+		//filter list items for filter buttons
+		else {
 				map.setCenter({lat: 43.6547878, lng: -79.3967198});
-				map.setZoom(13);
-				map.panBy(0, 0);
+				resizeMapZoom()
 				markers.map( marker => marker.setMap(null))
 				return markers.map(marker => {
 					if (type === marker.type){
@@ -120,23 +111,26 @@ class InfoPanel extends Component {
 						marker.setMap(map)
 						return this.ListItem(marker);
 					}
+					return null
 				})
 		}
 	}
 
-	defaultList (newType) {
+	//filter list items for reset buttons
+	handleResetButton (newType) {
+		const { map, resizeMapZoom } = this.props;
 		this.props.infowindow.close()
 		this.setState({ type:newType });
 		this.setState({ query:'' })
-		this.props.map.setCenter({lat: 43.6547878, lng: -79.3967198});
-		this.props.map.setZoom(13);
-		this.props.map.panBy(0, 0);
+		map.setCenter({lat: 43.6547878, lng: -79.3967198});
+		resizeMapZoom()
 	}
 
+	//create list items with icon by filter
 	ListItem (marker) {
 		const { classes, handleClick } = this.props;
 		return(
-		<ListItem key={marker.title} disableGutters button className={classes.list} onClick={e => handleClick(marker)}>
+		<ListItem key={marker.title} disableGutters button className={classes.list} aria-label={marker.title} onClick={e => handleClick(marker)}>
 			  <Avatar>
             {marker.type === "food" ? <Icon>restaurant</Icon> : <Icon>local_play</Icon> }
         </Avatar>
@@ -145,28 +139,40 @@ class InfoPanel extends Component {
 		);
 	}
 
+	//set query to state
 	filterList = (query) => {
 		this.setState({ query })
 	}
 
+	//handle filter button onclick event
 	handleButton = (newType) => {
 		this.props.infowindow.close()
     this.setState({ type:newType });
     this.createList();
   }
 
+  //handler for switch to hide or show the side menu
   handleSlide = () =>{
   	const currentState = this.state.active;
   	this.setState({ active: !currentState });
   }
 
 	render() {
-		const { classes, markers, handleClick } = this.props;
+		const { classes } = this.props;
 		const { query } = this.state;
 
     return (
     	<div>
-    	  <Button variant="fab" id="menu" className={classes.menuButton} onClick={this.handleSlide}>
+    	  <Button 
+    	  variant="fab" 
+    	  id="menu" 
+    	  color={this.state.active ? 'primary': null}
+    	  className={classNames(classes.menuButtonOff, {
+            [classes.menuButtonOn]: this.state.active === true,
+          })} 
+    	  onClick={this.handleSlide}
+    	  aria-label="Show Side Menu"
+    	  >
 			    <Icon>menu</Icon>
 			  </Button>
 		    <nav className={this.state.active ? 'open': null}  id="sideMenu">
@@ -181,24 +187,24 @@ class InfoPanel extends Component {
 			    aria-labelledby="location filter"
 			    onChange={(event) => this.filterList(event.target.value)}
 			    />
-			    <div id="buttons" className={classes.root2}>
+			    <div id="buttons" className={classes.buttonList}>
 			    	<Tooltip title="Restaurants Filter" placement="top">
-				      <Button variant="fab" value="food" color="primary" aria-label="add" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+				      <Button variant="fab" value="food" color="primary" aria-label="Restaurants Filter Button" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
 				        <Icon>restaurant</Icon>
 				      </Button>
 			      </Tooltip>
 			      <Tooltip title="FunPlaces Filter" placement="top">
-				      <Button variant="fab" value="fun" color="secondary" aria-label="edit" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
+				      <Button variant="fab" value="fun" color="secondary" aria-label="FunPlaces Filter Button" className={classes.button} onClick={e => this.handleButton(e.currentTarget.value)}>
 				        <Icon>local_play</Icon>
 				      </Button>
 			      </Tooltip>
 			      <Tooltip title="Reset" placement="top">
-				      <Button variant="fab" value="all" aria-label="delete" className={classes.button} onClick={e => this.defaultList(e.currentTarget.value)}>
+				      <Button variant="fab" value="all" aria-label="Reset Button" className={classes.button} onClick={e => this.handleResetButton(e.currentTarget.value)}>
 				        <Icon style={{ fontSize: 30 }}>refresh</Icon>
 				      </Button>
 			      </Tooltip>
 			    </div>
-			    <div className={classes.root}>
+			    <div className={classes.listContainer}>
 			      <List>
 							{this.createList()}
 			      </List>
@@ -207,17 +213,8 @@ class InfoPanel extends Component {
 		  </div>  
     );
 	}
-
-	 //  onResize = () => {
-  //   if (handleWidth > )
-  // }
-
 }
 InfoPanel.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 export default withStyles(styles)(InfoPanel);
-// if (typeof google === 'object' && typeof google.maps === 'object')
-// baefecde7ea358ba833d351ab220ed01 zomato
-// J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3 client id foursquareTPIDDHBKB2QFBWEV2MPDOFGUSWXCXGAA5IVOWEMN5ASR3UJW
-// VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z client secret 4HB1ZZJBVXC3F0BREBPSGXYK0VZ5ALS4XRNJZSBP1JROG0DE
