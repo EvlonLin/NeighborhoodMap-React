@@ -1,10 +1,9 @@
 import React from "react"
-import "./App.css"
+import "./css/App.css"
 import InfoPanel from "./components/InfoPanel"
-import scriptLoader from 'react-async-script-loader';
 import { MapStyle } from "./MapStyle.js"
 
-class MapApp extends React.Component {
+class App extends React.Component {
   // setup the variables
   state = {
     markers: [],
@@ -60,6 +59,7 @@ class MapApp extends React.Component {
   //run initMap function when open the app
   componentDidMount() {
     window.initMap = this.initMap;
+    loadMap(`https://maps.googleapis.com/maps/api/js?key=AIzaSyAhXhPjZlCsSU-ByZO61Pw24Pg0-rBnB20&v=3&libraries=places&callback=initMap`)
   }
 
   initMap = () => {
@@ -199,6 +199,15 @@ class MapApp extends React.Component {
   }
 }
 
-export default scriptLoader(
-    [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAhXhPjZlCsSU-ByZO61Pw24Pg0-rBnB20&v=3&libraries=places&callback=initMap`]
-)(MapApp);
+export default App;
+//load map asynchronous and catch the error
+function loadMap(src) {
+    var ref = window.document.getElementsByTagName("script")[0];
+    var script = window.document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onerror = function () {
+        document.write("Google Maps is unavailable right now");
+    };
+    ref.parentNode.insertBefore(script, ref);
+}
