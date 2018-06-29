@@ -13,10 +13,10 @@ This is the final project for the Udacity Front End Nanodegree Program. This app
 
 <a name="features"></a>
 ## Features
-- [x] Google Maps API
-- [x] Foursquare API
-- [x] React
-- [x] Material-UI
+- Google Maps API
+- Foursquare API
+- React
+- Material-UI
 
 <a name="requirements"></a>
 ## Requirements
@@ -38,5 +38,5 @@ Once installed run:
 
 <a name="Third-party-libraries"></a>
 ## Third-party libraries
-[react-async-script-loader](https://www.npmjs.com/package/react-async-script-loader)
-[@material-ui/core](https://www.npmjs.com/package/@material-ui/core)
+- [react-async-script-loader](https://www.npmjs.com/package/react-async-script-loader)
+- [@material-ui/core](https://www.npmjs.com/package/@material-ui/core)
