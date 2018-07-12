@@ -109,7 +109,7 @@ class App extends React.Component {
   handleMarkersClick = (marker) => {
     this.state.map.setCenter(marker.position);
     this.state.map.setZoom(16);
-    this.state.map.panBy(0, -250);
+    this.state.map.panBy(-100, -250);
     this.createInfowindow(marker);
     this.toggleBounce(marker);
   }
@@ -124,7 +124,7 @@ class App extends React.Component {
     } else {
       map.fitBounds(bounds);
     }
-    map.panBy(-100, 0);
+    map.panBy(0, 0);
   }
 
   //change markers animatiom for filter search
