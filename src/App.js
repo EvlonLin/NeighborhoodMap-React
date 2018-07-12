@@ -91,7 +91,7 @@ class App extends React.Component {
         this.toggleBounce(loc)
         this.createInfowindow(loc)
         map.setCenter(loc.position);
-        map.panBy(0, -200);
+        map.panBy(-100, -200);
       });
       this.state.markers.push(loc)
       return null
@@ -124,7 +124,7 @@ class App extends React.Component {
     } else {
       map.fitBounds(bounds);
     }
-    map.panBy(0, 0);
+    map.panBy(-100, 0);
   }
 
   //change markers animatiom for filter search
