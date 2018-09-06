@@ -59,7 +59,7 @@ class App extends React.Component {
   //run initMap function when open the app
   componentDidMount() {
     window.initMap = this.initMap;
-    loadMap(`https://maps.googleapis.com/maps/api/js?key=AIzaSyAhXhPjZlCsSU-ByZO61Pw24Pg0-rBnB20&v=3&libraries=places&callback=initMap`)
+    loadMap(`https://maps.googleapis.com/maps/api/js?key=?&v=3&libraries=places&callback=initMap`)
   }
 
   initMap = () => {
@@ -147,8 +147,8 @@ class App extends React.Component {
 
   //sending Ajax requese to foursquare
   foursquareInfowindow(marker) {
-    const clientId = "J34XRZ3VMGC0DRUHC2ZAMVJ5RWU1G01JDDPEZ4PVB3L1KSH3";
-    const clientSecret = "VRV0SUVBLZGKHSMEVDUYHNG5MQFRXLX04DRMR3MPTYH4RK3Z";
+    const clientId = "?";
+    const clientSecret = "?";
     var errorMessage = `<p>Sorry can't get data from the server</p>`
     var url = `https://api.foursquare.com/v2/venues/${marker.id}?client_id=${clientId}&client_secret=${clientSecret}&v=20170621`;
 
